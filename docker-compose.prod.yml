@@ -1,0 +1,60 @@
+version: "3.9"
+
+# ══════════════════════════════════════════
+#  docker-compose.prod.yml  ←  PRODUCTION
+#  Usage : docker compose -f docker-compose.prod.yml up --build -d
+# ══════════════════════════════════════════
+
+services:
+
+  # ── Base de données PostgreSQL ──────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres_prod
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    # Pas de port exposé en prod (accès interne uniquement)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend Spring Boot ─────────────────
+  backend:
+    build:
+      context: ./backend
+      target: prod             # ← stage PROD du Dockerfile
+    container_name: backend_prod
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${stockdb}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${Dreamcast1985@.@}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_PROFILES_ACTIVE: prod
+    expose:
+      - "8080"                 # accessible uniquement depuis le réseau Docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── Frontend React (Nginx) ──────────────
+  frontend:
+    build:
+      context: ./frontend
+      target: prod             # ← stage PROD du Dockerfile
+    container_name: frontend_prod
+    restart: always
+    ports:
+      - "80:80"                # seul port exposé vers l'extérieur
+    depends_on:
+      - backend
+
+volumes:
+  postgres_prod_data:

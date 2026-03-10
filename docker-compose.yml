@@ -1,0 +1,68 @@
+version: "3.9"
+
+# ══════════════════════════════════════════
+#  docker-compose.yml  ←  DÉVELOPPEMENT
+#  Usage : docker compose up --build
+# ══════════════════════════════════════════
+
+services:
+
+  # ── Base de données PostgreSQL ──────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-stockdb}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Dreamcast1985@.@}
+    ports:
+      - "5432:5432"           # accessible depuis l'hôte (DBeaver, etc.)
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend Spring Boot ─────────────────
+  backend:
+    build:
+      context: ./backend
+      target: dev             # ← stage DEV du Dockerfile
+    container_name: backend_dev
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend/src:/app/src   # hot reload : les modifs src sont prises en compte
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── Frontend React ──────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      target: dev             # ← stage DEV du Dockerfile
+    container_name: frontend_dev
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:8080/api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app        # hot reload Vite
+      - /app/node_modules      # évite d'écraser node_modules du conteneur
+    depends_on:
+      - backend
+
+volumes:
+  postgres_dev_data:

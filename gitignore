@@ -1,0 +1,27 @@
+# ── Variables d'environnement ──
+.env
+.env.local
+.env.*.local
+
+# ── Node / React ──
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ── Java / Maven ──
+backend/target/
+backend/*.jar
+backend/.mvn/
+
+# ── IDE ──
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# ── Docker ──
+docker-compose.override.yml
+
+# ── OS ──
+.DS_Store
+Thumbs.db

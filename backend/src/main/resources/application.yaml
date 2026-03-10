@@ -1,0 +1,59 @@
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+    min-response-size: 128
+  servlet:
+    context-path: /api/stockportefoliotracker/v1  
+
+spring:
+  application:
+    name: Stock_Portefolio_Tracker
+
+  security:
+    enabled: false
+    
+  datasource:
+    
+    url: jdbc:postgresql://localhost:5432/stockdb
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+
+  sql:
+    init:
+      mode: always
+  
+jwt:
+  key: ${JWT_KEY}
+  expiration: 900000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+stock:
+  api:
+    base-url: https://www.alphavantage.co
+    api-key: ${ALPHA_VINTAGE}
+
+
+info:
+  app:
+    name: Stock_Portefolio_Tracker
+    description: App of management of Stock_Portefolio
+    version: 1.0.0
