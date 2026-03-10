@@ -39,10 +39,13 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_PROFILES_ACTIVE: dev
+      JWT_KEY: ${JWT_KEY}                          # ← ajoute ça
+      ALPHA_VINTAGE: ${ALPHA_VINTAGE}  
+      
+     
     ports:
       - "8080:8080"
-    volumes:
-      - ./backend/src:/app/src   # hot reload : les modifs src sont prises en compte
+   
     depends_on:
       postgres:
         condition: service_healthy
@@ -55,7 +58,7 @@ services:
     container_name: frontend_dev
     restart: unless-stopped
     environment:
-      VITE_API_URL: http://localhost:8080/api
+      VITE_API_URL: http://localhost:8080/api/stockportefoliotracker/v1
     ports:
       - "5173:5173"
     volumes:

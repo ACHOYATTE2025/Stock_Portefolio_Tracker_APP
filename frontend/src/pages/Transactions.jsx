@@ -107,29 +107,29 @@ const CSS = `
 `;
 
 function Transactions() {
-  const [history, setHistory]       = useState([]);
+  const [history, setHistory]               = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
   const [historyError, setHistoryError]     = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
-  const [walletBal, setWalletBal]   = useState(null);
+  const [successMsg, setSuccessMsg]         = useState("");
+  const [walletBal, setWalletBal]           = useState(null);
   const navigate = useNavigate();
 
   const now     = new Date();
   const dateStr = now.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
-  // ✅ Charger historique des transactions depuis l'API
+  // Load transaction history from API
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [txRes, walletData] = await Promise.allSettled([
-          api.get("/transactions"),   // ✅ GET /transactions — à adapter si route différente
+          api.get("/transactions"),
           getWallet(),
         ]);
 
         if (txRes.status === "fulfilled") {
           setHistory(txRes.value.data ?? []);
         } else {
-          setHistoryError("Unable to load history");
+          setHistoryError("Unable to load transaction history.");
         }
 
         if (walletData.status === "fulfilled") {
@@ -142,10 +142,9 @@ function Transactions() {
     fetchData();
   }, []);
 
-  // ✅ Après une transaction réussie : ajoute à l'historique + rafraîchit le wallet
+  // After a successful transaction: add to history and refresh wallet balance
   const handleTransactionSuccess = async (newTx) => {
     if (newTx) {
-      // Transformer la réponse backend en format affichage
       const entry = {
         id:     Date.now(),
         date:   new Date().toISOString().split("T")[0],
@@ -158,13 +157,13 @@ function Transactions() {
       setHistory(prev => [entry, ...prev]);
     }
 
-    // Rafraîchir le solde wallet
+    // Refresh wallet balance
     try {
       const walletData = await getWallet();
       setWalletBal(walletData.amount);
     } catch (_) {}
 
-    setSuccessMsg("Transaction successfully completed !");
+    setSuccessMsg("Transaction successfully completed!");
     setTimeout(() => setSuccessMsg(""), 3500);
   };
 
@@ -189,7 +188,7 @@ function Transactions() {
             </div>
 
             <div style={S.headerRight}>
-              <div className="wallet-badge" style={S.walletBadge} onClick={() => navigate("/wallet")} title="Access the wallet">
+              <div className="wallet-badge" style={S.walletBadge} onClick={() => navigate("/wallet")} title="Go to wallet">
                 <div style={S.walletDot} />
                 <div style={S.walletInfo}>
                   <span style={S.walletLabel}>Wallet</span>
@@ -212,7 +211,7 @@ function Transactions() {
 
           <main style={S.main}>
 
-            {/* ── Message succès ── */}
+            {/* ── Success message ── */}
             {successMsg && (
               <div style={{
                 background: "rgba(0,212,122,0.07)", border: "1px solid rgba(0,212,122,0.22)",
@@ -224,19 +223,19 @@ function Transactions() {
               </div>
             )}
 
-            {/* ── Grille principale ── */}
+            {/* ── Main grid ── */}
             <div style={{ animation: "slideIn 0.5s ease 0.1s both" }}>
               <div style={S.sectionTitle}>
                 Place an order <span style={S.sectionLine} />
               </div>
 
               <div style={S.grid}>
-                {/* ── Historique ── */}
+                {/* ── Transaction history ── */}
                 <div style={S.panel}>
                   <div style={S.panelHeader}>
-                    <span style={S.panelTitle}>Historique</span>
+                    <span style={S.panelTitle}>History</span>
                     <span style={{ fontSize: "10px", color: "rgba(0,168,255,0.5)", fontFamily: "monospace", letterSpacing: "1px" }}>
-                      {history.length} ordre{history.length !== 1 ? "s" : ""}
+                      {history.length} order{history.length !== 1 ? "s" : ""}
                     </span>
                   </div>
 
@@ -256,7 +255,7 @@ function Transactions() {
                     <table style={S.table}>
                       <thead>
                         <tr>
-                          {["Date", "Symbol", "Type", "Qty", "Unit Price.", "Total"].map(h => (
+                          {["Date", "Symbol", "Type", "Qty", "Unit Price", "Total"].map(h => (
                             <th key={h} style={S.th}>{h}</th>
                           ))}
                         </tr>
@@ -288,10 +287,10 @@ function Transactions() {
                   )}
                 </div>
 
-                {/* ── Formulaire ── */}
+                {/* ── Order form ── */}
                 <div style={S.panel}>
                   <div style={S.panelHeader}>
-                    <span style={S.panelTitle}>New order</span>
+                    <span style={S.panelTitle}>New Order</span>
                   </div>
                   <div style={S.panelBody}>
                     <TransactionForm onSuccess={handleTransactionSuccess} />
