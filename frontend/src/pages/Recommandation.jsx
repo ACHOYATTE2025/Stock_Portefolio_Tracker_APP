@@ -239,8 +239,7 @@ export default function Recommendation() {
                     ) : (
                       <input className="field-select" style={S.select} type="text" placeholder="Portfolio name…" value={portfolioName} onChange={e => setPortfolioName(e.target.value)} />
                     )}
-                    {/* Spacer to match the symbolHint height below Stock Symbol */}
-                    <span style={{ ...S.symbolHint, visibility: "hidden" }}>placeholder</span>
+                    <span style={{ ...S.selectedHint, visibility: "hidden" }}>placeholder</span>
                   </div>
 
                   <div style={S.fieldWrap}>
@@ -259,7 +258,7 @@ export default function Recommendation() {
                         <option key={sym} value={sym} style={{ background: "#0d1117" }}>{sym}</option>
                       ))}
                     </select>
-                    <span style={S.symbolHint}>
+                    <span style={S.selectedHint}>
                       {stockSymbol && buyPrice !== null && buyPrice > 0
                         ? `◈ Avg. buy price: $${buyPrice.toFixed(2)}`
                         : portfolioSymbols.length > 0 ? `${portfolioSymbols.length} holding${portfolioSymbols.length !== 1 ? "s" : ""} available` : ""}
