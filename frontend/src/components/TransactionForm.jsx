@@ -177,10 +177,10 @@ function TransactionForm({ onSuccess }) {
 
         {/* ── Type BUY / SELL ── */}
         <div style={S.fieldGroup}>
-          <span style={S.label}>Type d'ordre</span>
+          <span style={S.label}>Order Type</span>
           <div style={S.typeRow}>
-            <button style={S.typeBtn(isBuy, true)}  onClick={() => setType("BUY")}>▲ Achat</button>
-            <button style={S.typeBtn(!isBuy, false)} onClick={() => setType("SELL")}>▼ Vente</button>
+            <button style={S.typeBtn(isBuy, true)}  onClick={() => setType("BUY")}>▲ BUYING</button>
+            <button style={S.typeBtn(!isBuy, false)} onClick={() => setType("SELL")}>▼ SELLING </button>
           </div>
         </div>
 
@@ -188,9 +188,9 @@ function TransactionForm({ onSuccess }) {
         <div style={S.fieldGroup}>
           <label style={S.label}>Portfolio</label>
           {loadingPf ? (
-            <div style={S.loadingText}>Chargement des portfolios…</div>
+            <div style={S.loadingText}>Portfolios Loading…</div>
           ) : portfolios.length === 0 ? (
-            <div style={S.errorBox}>⚠ Aucun portfolio — créez-en un d'abord</div>
+            <div style={S.errorBox}>⚠ No portfolio — create one first</div>
           ) : (
             <select
               className="tx-select"
@@ -224,7 +224,7 @@ function TransactionForm({ onSuccess }) {
 
         {/* ── Quantité ── */}
         <div style={S.fieldGroup}>
-          <label style={S.label}>Quantité</label>
+          <label style={S.label}>Quantity</label>
           <input
             className="tx-input"
             style={S.input}
@@ -244,7 +244,7 @@ function TransactionForm({ onSuccess }) {
             <div style={S.summaryRow}>
               <span style={S.summaryLabel}>Ordre</span>
               <span style={{ ...S.summaryValue, color: isBuy ? "#00d47a" : "#ff8080", fontWeight: "700" }}>
-                {isBuy ? "▲ ACHAT" : "▼ VENTE"}
+                {isBuy ? "▲ BUYING" : "▼ SELLING"}
               </span>
             </div>
             <div style={S.divider} />
@@ -255,12 +255,12 @@ function TransactionForm({ onSuccess }) {
               </span>
             </div>
             <div style={S.summaryRow}>
-              <span style={S.summaryLabel}>Symbole</span>
+              <span style={S.summaryLabel}>Symbol</span>
               <span style={{ ...S.summaryValue, color: "#78c8ff" }}>{symbol}</span>
             </div>
             <div style={S.summaryRow}>
-              <span style={S.summaryLabel}>Quantité</span>
-              <span style={S.summaryValue}>{qty} action{qty > 1 ? "s" : ""}</span>
+              <span style={S.summaryLabel}>Quantity</span>
+              <span style={S.summaryValue}>{qty} stock{qty > 1 ? "s" : ""}</span>
             </div>
           </div>
         )}
@@ -276,7 +276,7 @@ function TransactionForm({ onSuccess }) {
           onClick={handleSubmit}
           disabled={loading || !valid}
         >
-          {loading ? "Exécution en cours…" : isBuy ? "▲ Passer l'achat" : "▼ Passer la vente"}
+          {loading ? "Processing…" : isBuy ? "▲ Place the purchase" : "▼ Place the selling"}
         </button>
 
       </div>
