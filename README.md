@@ -9,13 +9,32 @@ This project combines two separate GitHub repositories:
 | `frontend/` | https://github.com/ACHOYATTE2025/Stock_Portefolio_UI |
 | `backend/` | https://github.com/ACHOYATTE2025/Stock_Portefolio_Tracker |
 
+## Live Demo (Render)
+
+| Service  | URL |
+|----------|-----|
+| Frontend | https://stock-portfolio-tracker-app-frontend.onrender.com |
+| Backend  | https://stock-portfolio-tracker-app-backend.onrender.com |
+
+> ⚠️ Render free tier puts services to sleep after inactivity. The first request may take 30–60 seconds to wake up.
+
+## Docker Hub Images
+
+| Image | Tag |
+|-------|-----|
+| `achoyatte2025/stock_portfolio_tracker_app-frontend` | `prod` |
+| `achoyatte2025/stock_portfolio_tracker_app-backend` | `latest` |
+
+---
+
 ## Project Structure
 
 ```
 mon-projet/
-├── frontend/                  ← React application (Vite)
+├── frontend/                  ← React application (Vite + SWC)
 │   ├── Dockerfile             ← Multi-stage: dev + build + prod (Nginx)
-│   └── nginx.conf             ← Nginx config for React Router
+│   ├── nginx.conf             ← Nginx config for React Router + API proxy
+│   └── .env                  ← VITE_API_URL (not committed)
 ├── backend/                   ← Spring Boot API
 │   └── Dockerfile             ← Multi-stage: dev + build + prod
 ├── docker-compose.yml         ← DEV environment
@@ -62,11 +81,11 @@ docker compose up --build
 | Backend    | http://localhost:8080 |
 | PostgreSQL | localhost:5432        |
 
-> **Hot reload** is enabled: changes in `frontend/` and `backend/src/` are picked up automatically without rebuilding the image.
+> **Hot reload** is enabled: changes in `frontend/src/` are picked up automatically without rebuilding the image.
 
 ---
 
-### 3. Run in production
+### 3. Run in production (local)
 
 ```bash
 docker compose -f docker-compose.prod.yml up --build -d
@@ -76,32 +95,97 @@ docker compose -f docker-compose.prod.yml up --build -d
 |---------|---------------------|
 | App     | http://localhost:80 |
 
-In production, only port **80** is exposed. The frontend (Nginx) proxies requests to the backend.
+In production, only port **80** is exposed. The frontend (Nginx) proxies API requests to the backend.
+
+---
+
+## Deploying to Render
+
+### Steps
+
+1. **Build and push images to Docker Hub:**
+
+```bash
+# Backend
+cd backend
+docker build --target prod --no-cache -t achoyatte2025/stock_portfolio_tracker_app-backend:latest .
+docker push achoyatte2025/stock_portfolio_tracker_app-backend:latest
+
+# Frontend
+cd ../frontend
+docker build --target prod --no-cache -t achoyatte2025/stock_portfolio_tracker_app-frontend:prod .
+docker push achoyatte2025/stock_portfolio_tracker_app-frontend:prod
+```
+
+2. **On Render**, create:
+   - A **PostgreSQL** database (managed by Render)
+   - A **Web Service** for the backend → Existing Docker Image → `achoyatte2025/stock_portfolio_tracker_app-backend:latest`
+   - A **Web Service** for the frontend → Existing Docker Image → `achoyatte2025/stock_portfolio_tracker_app-frontend:prod`
+
+3. **Set environment variables** on the Render backend service:
+
+| Variable | Value |
+|----------|-------|
+| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://<host>:5432/<dbname>` |
+| `DB_USER` | your Render DB username |
+| `DB_PASS` | your Render DB password |
+| `JWT_KEY` | your JWT secret |
+| `MAIL_USER` | your SMTP email |
+| `MAIL_PASS` | your SMTP password |
+| `ALPHA_VINTAGE` | your Alpha Vantage API key |
+
+4. **Trigger Manual Deploy** on both services after every image push.
+
+### Important Notes
+
+- The PostgreSQL URL from Render uses the format `postgresql://user:pass@host/db` — prefix it with `jdbc:` for Spring Boot: `jdbc:postgresql://host:5432/db`
+- `VITE_API_URL` is baked into the frontend image at **build time** — always rebuild and repush the frontend image after changing it
+- The `frontend/.env` file must be at the root of `frontend/` (not inside `src/`) and must **not** appear in `.dockerignore`
+- The frontend `nginx.conf` proxies `/api/stockportefoliotracker/v1/` requests to the Render backend URL
 
 ---
 
 ## Spring Boot Configuration
 
-In `backend/src/main/resources/application.properties` (or `application.yml`), variables are injected by Docker Compose:
+In `backend/src/main/resources/application.yml`:
 
-```properties
-spring.datasource.url=${SPRING_DATASOURCE_URL}
-spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
-spring.jpa.hibernate.ddl-auto=${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://<render-host>:5432/<dbname>
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    driver-class-name: org.postgresql.Driver
 ```
 
 ---
 
 ## React Configuration (Vite)
 
-In `frontend/src/`, use the environment variable for the API base URL:
+In `frontend/.env`:
 
-```javascript
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/stockportefoliotracker/v1';
+```
+VITE_API_URL=https://stock-portfolio-tracker-app-backend.onrender.com/api/stockportefoliotracker/v1
 ```
 
-In production, `/api/stockportefoliotracker/v1/` requests are proxied through Nginx (defined in `nginx.conf`), so `VITE_API_URL` is not needed.
+In `frontend/src/axiosClient.js`:
+
+```javascript
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/stockportefoliotracker/v1";
+```
+
+---
+
+## CORS Configuration
+
+The backend allows requests from both local and Render origins. In `SecurityConfig.java`:
+
+```java
+configuration.setAllowedOrigins(List.of(
+    "http://localhost:5173",
+    "https://stock-portfolio-tracker-app-frontend.onrender.com"
+));
+```
 
 ---
 
@@ -129,15 +213,14 @@ docker compose exec postgres psql -U postgres -d stockdb
 
 ## Environment Variables
 
-| Variable            | Description             | Default (dev) |
-|---------------------|-------------------------|---------------|
-| `POSTGRES_DB`       | Database name           | `stockdb`     |
-| `POSTGRES_USER`     | PostgreSQL user         | `postgres`    |
-| `POSTGRES_PASSWORD` | PostgreSQL password     | —             |
-| `JWT_KEY`           | JWT secret key          | —             |
-| `MAIL_USER`         | SMTP email address      | —             |
-| `MAIL_PASS`         | SMTP email password     | —             |
-| `ALPHA_VINTAGE`     | Alpha Vantage API key   | —             |
+| Variable            | Description                      | Default (dev)               |
+|---------------------|----------------------------------|-----------------------------|
+| `POSTGRES_DB`       | Database name                    | `stockdb`                   |
+| `DB_USER`     | PostgreSQL user                  | `postgres`                  |
+| `DB_PASSWORD` | PostgreSQL password              | —                           |
+| `JWT_KEY`           | JWT secret key                   | —                           |
+| `ALPHA_VINTAGE`     | Alpha Vantage API key            | —                           |
+| `VITE_API_URL`      | Backend API URL (frontend build) | `http://localhost:8080/...` |
 
 > ⚠️ **Never commit the `.env` file** — it is listed in `.gitignore`.
 
@@ -160,5 +243,8 @@ git subtree add --prefix=backend backend-old main --squash
 
 Otherwise, simply copy the files into the `frontend/` and `backend/` folders.
 
+---
+
 ## Author
+
 GitHub: [@ACHOYATTE2025](https://github.com/ACHOYATTE2025)
