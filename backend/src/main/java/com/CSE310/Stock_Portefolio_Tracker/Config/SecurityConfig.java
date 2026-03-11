@@ -95,7 +95,10 @@ public AuthenticationProvider authenticationProvider(UserDetailsService userDeta
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:5173",
+            "https://stock-portfolio-tracker-app-frontend.onrender.com"
+        ));
         configuration.setAllowedMethods(List.of(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS"
         ));

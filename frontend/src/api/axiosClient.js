@@ -1,8 +1,10 @@
 import axios from "axios";
 import { getAccessToken, getRefreshToken, setTokens, removeTokens, removeUsername } from "../utils/tokenStorage";
 
-const api = axios.create({
-  baseURL: "http://localhost:8080/api/stockportefoliotracker/v1",
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/stockportefoliotracker/v1";
+
+const api = axios.create({  
+  baseURL: BASE_URL,
 });
 
 // ─── Intercepteur REQUEST ─────────────────────────────────────────
@@ -68,10 +70,10 @@ api.interceptors.response.use(
         if (!currentRefreshToken) throw new Error("Pas de refresh token");
 
         // ✅ Appel refresh
-        const response = await axios.post(
-        "http://localhost:8080/api/stockportefoliotracker/v1/refreshtoken",
-        { refreshToken: currentRefreshToken }
-      );
+       const response = await axios.post(
+          `${BASE_URL}/refreshtoken`,
+          { refreshToken: currentRefreshToken }
+        );
 
         const newToken =
           response.data.token ??

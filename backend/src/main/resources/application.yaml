@@ -17,7 +17,7 @@ spring:
     
   datasource:
     
-    url: jdbc:postgresql://localhost:5432/stockdb
+    url: jdbc:postgresql://dpg-d6o8ricr85hc739972s0-a:5432/stockdb_7ila
     username: ${DB_USER}
     password: ${DB_PASS}
     driver-class-name: org.postgresql.Driver

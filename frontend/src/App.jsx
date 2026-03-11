@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
-import Wallet from "./pages/wallet.jsx";
+import Wallet from "./pages/Wallet.jsx";
 import Portfolio from "./pages/Portfolio.jsx";
 import Transactions from "./pages/Transactions.jsx";
 import Home from "./pages/Home.jsx";
