@@ -24,7 +24,7 @@ public class StockApiClient {
     }
 
     
-    @Cacheable("stockPrice")
+   
     public GlobalQuoteResponse getStockPrice(String symbol) {
         log.info("Appel Alpha Vantage pour le symbole : {}", symbol);
         log.info("API Key utilisée : {}", apiKey);

@@ -67,6 +67,7 @@ public class TransactionService {
         // 4️⃣ Prix réel via API
         
         GlobalQuoteResponse response = stockApiClient.getStockPrice(stock.getSymbol());
+        log.info("Quote response :"+ response);
         if (response == null || response.getQuote() == null) {
             throw new RuntimeException("Stock price unavailable from API");
         }
