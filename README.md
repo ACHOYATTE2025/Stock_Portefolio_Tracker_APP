@@ -38,7 +38,8 @@ mon-projet/
 ├── backend/                   ← Spring Boot API
 │   └── Dockerfile             ← Multi-stage: dev + build + prod
 ├── docker-compose.yml         ← DEV environment
-├── docker-compose.prod.yml    ← PROD environment
+├── docker-compose.prod.yml
+├── .env   
 ├── .env.example               ← Environment variables template
 ├── .gitignore
 └── README.md
