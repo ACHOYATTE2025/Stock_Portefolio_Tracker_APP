@@ -47,7 +47,7 @@ public class RecommendationService {
 
         recommendation.setCurrentPrice(currentPrice);
 
-        // Gain / perte
+        // Gain / lost
         BigDecimal gainLoss = currentPrice.subtract(buyPrice);
         recommendation.setGainLoss(gainLoss);
 

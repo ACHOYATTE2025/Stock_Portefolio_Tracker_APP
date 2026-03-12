@@ -45,7 +45,6 @@ public class TransactionService {
     private final WalletRepository walletRepository;
 
     @Transactional
-    @Cacheable("stockPrice")
     public TransactionResponse executeTransaction(TransactionRequest request) {
 
         // 1️⃣ Récupérer utilisateur connecté

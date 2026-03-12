@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-StockPortefolioTrackerApplication<Stock_Portefolio_Tracker>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.CSE310.Stock_Portefolio_Tracker.StockPortefolioTrackerApplication",
+            "projectName": "Stock_Portefolio_Tracker",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
