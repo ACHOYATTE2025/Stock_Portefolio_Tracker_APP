@@ -13,9 +13,9 @@ services:
     container_name: postgres_prod
     restart: always
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${stockdb}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
     # Pas de port exposé en prod (accès interne uniquement)
@@ -33,9 +33,9 @@ services:
     container_name: backend_prod
     restart: always
     environment:
-      SSPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SSPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/stockdb
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       SPRING_PROFILES_ACTIVE: prod
     expose:

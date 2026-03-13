@@ -159,7 +159,6 @@ const styles = {
     fontFamily: "'Courier New', monospace",
     letterSpacing: "0.3px",
   },
-  // ✅ Boîte de succès
   successBox: {
     background: "rgba(0, 212, 122, 0.08)",
     border: "1px solid rgba(0, 212, 122, 0.35)",
@@ -299,7 +298,7 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false); // ✅ état succès
+  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -308,12 +307,10 @@ function Register() {
 
     try {
       await register({ username, email, password });
-      setSuccess(true); // ✅ affiche le message
-
-      // ✅ redirige vers "/" après 3 secondes
+      setSuccess(true);
       setTimeout(() => navigate("/login"), 3000);
     } catch (err) {
-      setError(err.response?.data?.message || "Échec de l'inscription");
+      setError(err.response?.data?.message || "Registration failed");
     }
   };
 
@@ -332,30 +329,30 @@ function Register() {
           <div style={styles.welcomeSection}>
             <div style={styles.ticker}>
               <div style={styles.tickerDot} />
-              <span style={styles.tickerText}>Nouveau compte</span>
+              <span style={styles.tickerText}>New Account</span>
             </div>
             <h1 style={styles.welcomeTitle}>Stock Portfolio</h1>
             <p style={styles.welcomeSubtitle}>
-              Créez votre compte et commencez<br />
-              à gérer vos actifs dès aujourd'hui
+              Create your account and start<br />
+              managing your assets today
             </p>
           </div>
 
           <div style={styles.divider} />
 
-          {/* ✅ Message de succès */}
+          {/* Success message */}
           {success ? (
             <div style={styles.successBox}>
               <div style={styles.successIcon}>✅</div>
-              <div style={styles.successTitle}>Inscription réussie !</div>
+              <div style={styles.successTitle}>Registration Successful!</div>
               <div style={styles.successText}>
-                Bienvenue, <strong style={{ color: "#e8f0f8" }}>{username}</strong> !<br />
-                Votre compte a été créé avec succès.
+                Welcome, <strong style={{ color: "#e8f0f8" }}>{username}</strong>!<br />
+                Your account has been created successfully.
               </div>
               <div style={styles.successTimer}>
-                Redirection vers l'accueil dans 3 secondes...
+                Redirecting to login in 3 seconds...
               </div>
-              {/* Barre de progression */}
+              {/* Progress bar */}
               <div style={{
                 marginTop: "12px",
                 height: "2px",
@@ -372,13 +369,13 @@ function Register() {
             </div>
           ) : (
             <>
-              <p style={styles.formTitle}>Inscription</p>
+              <p style={styles.formTitle}>Sign Up</p>
 
               {error && <div style={styles.errorBox}>⚠ {error}</div>}
 
               <form onSubmit={handleRegister}>
                 <div style={styles.fieldGroup}>
-                  <label style={styles.label}>Nom d'utilisateur</label>
+                  <label style={styles.label}>Username</label>
                   <input
                     style={styles.input}
                     type="text"
@@ -390,19 +387,19 @@ function Register() {
                 </div>
 
                 <div style={styles.fieldGroup}>
-                  <label style={styles.label}>Adresse e-mail</label>
+                  <label style={styles.label}>Email Address</label>
                   <input
                     style={styles.input}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="vous@exemple.com"
+                    placeholder="you@example.com"
                     required
                   />
                 </div>
 
                 <div style={styles.fieldGroup}>
-                  <label style={styles.label}>Mot de passe</label>
+                  <label style={styles.label}>Password</label>
                   <input
                     style={styles.input}
                     type="password"
@@ -414,14 +411,14 @@ function Register() {
                 </div>
 
                 <button style={styles.submitBtn} type="submit">
-                  Créer mon compte →
+                  Create My Account →
                 </button>
               </form>
 
               <div style={styles.footer}>
-                Déjà un compte ?{" "}
+                Already have an account?{" "}
                 <Link to="/" style={styles.loginLink}>
-                  Se connecter
+                  Sign In
                 </Link>
               </div>
             </>
@@ -431,17 +428,17 @@ function Register() {
           <div style={styles.statsRow}>
             <div style={styles.statItem}>
               <div style={styles.statValue}>10K+</div>
-              <div style={styles.statLabel}>Investisseurs</div>
+              <div style={styles.statLabel}>Investors</div>
             </div>
             <div style={styles.statDivider} />
             <div style={styles.statItem}>
               <div style={styles.statValue}>50+</div>
-              <div style={styles.statLabel}>Marchés</div>
+              <div style={styles.statLabel}>Markets</div>
             </div>
             <div style={styles.statDivider} />
             <div style={styles.statItem}>
               <div style={styles.statValue}>24/7</div>
-              <div style={styles.statLabel}>Suivi live</div>
+              <div style={styles.statLabel}>Live Tracking</div>
             </div>
           </div>
         </div>
