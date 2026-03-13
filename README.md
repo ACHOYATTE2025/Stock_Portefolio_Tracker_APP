@@ -1,4 +1,14 @@
-# Fullstack Project — React + Spring Boot + PostgreSQL
+# Stock Portfolio Tracker — React + Spring Boot + PostgreSQL
+
+## Overview
+
+This is a fullstack web application built to demonstrate proficiency in the Java programming language and the Spring Boot framework. The backend is a RESTful API developed with Java 17 and Spring Boot 3, featuring JWT-based authentication, JPA/Hibernate for database management, and integration with the Alpha Vantage external API to retrieve real-time stock prices. The frontend is a React single-page application built with Vite and communicates with the backend via Axios. The entire application is containerized with Docker and deployed on Render.
+
+## Purpose
+
+This project was developed to consolidate and demonstrate skills acquired during the BYU-Idaho Software Development Certificate program. The goal was to build a real-world fullstack application that covers the full development lifecycle: designing a REST API with Spring Security, managing relational data with PostgreSQL, integrating a third-party financial API, and deploying a production-ready containerized application using Docker and a CI/CD-ready workflow. The project also served as an opportunity to practice DevOps concepts such as multi-stage Docker builds, environment variable management, and cloud deployment on Render.
+
+---
 
 ## Source Code Origin
 
@@ -217,8 +227,8 @@ docker compose exec postgres psql -U postgres -d stockdb
 | Variable            | Description                      | Default (dev)               |
 |---------------------|----------------------------------|-----------------------------|
 | `POSTGRES_DB`       | Database name                    | `stockdb`                   |
-| `DB_USER`     | PostgreSQL user                  | `postgres`                  |
-| `DB_PASSWORD` | PostgreSQL password              | —                           |
+| `DB_USER`           | PostgreSQL user                  | `postgres`                  |
+| `DB_PASSWORD`       | PostgreSQL password              | —                           |
 | `JWT_KEY`           | JWT secret key                   | —                           |
 | `ALPHA_VINTAGE`     | Alpha Vantage API key            | —                           |
 | `VITE_API_URL`      | Backend API URL (frontend build) | `http://localhost:8080/...` |
