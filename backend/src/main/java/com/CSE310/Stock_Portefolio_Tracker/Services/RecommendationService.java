@@ -41,7 +41,7 @@ public class RecommendationService {
 
         if (currentPrice == null) {
             recommendation.setAdvice("UNKNOWN");
-            recommendation.setComment("Impossible de récupérer le prix actuel");
+            recommendation.setComment("Current price unavailable");
             return recommendation;
         }
 
