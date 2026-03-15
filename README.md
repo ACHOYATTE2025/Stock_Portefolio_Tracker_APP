@@ -2,11 +2,21 @@
 
 ## Overview
 
-This is a fullstack web application built to demonstrate proficiency in the Java programming language and the Spring Boot framework. The backend is a RESTful API developed with Java 17 and Spring Boot 3, featuring JWT-based authentication, JPA/Hibernate for database management, and integration with the Alpha Vantage external API to retrieve real-time stock prices. The frontend is a React single-page application built with Vite and communicates with the backend via Axios. The entire application is containerized with Docker and deployed on Render.
+This is a fullstack web application built to demonstrate proficiency in the Java programming language and the Spring Boot framework. The backend is a RESTful API developed with Java 17 and Spring Boot 3, featuring JWT-based authentication, JPA/Hibernate for database management, and integration with the Alpha Vantage external API to retrieve real-time stock prices. The frontend is built with Vite and communicates with the backend via Axios. The entire application is containerized with Docker and deployed on Render.
+
+The application allows users to manage a stock portfolio — track holdings, execute buy/sell transactions, monitor wallet balance, and get stock recommendations based on real-time market data.
 
 ## Purpose
 
 This project was developed to consolidate and demonstrate skills acquired during the BYU-Idaho Software Development Certificate program. The goal was to build a real-world fullstack application that covers the full development lifecycle: designing a REST API with Spring Security, managing relational data with PostgreSQL, integrating a third-party financial API, and deploying a production-ready containerized application using Docker and a CI/CD-ready workflow. The project also served as an opportunity to practice DevOps concepts such as multi-stage Docker builds, environment variable management, and cloud deployment on Render.
+
+---
+
+## Video Demo
+
+[![Stock Portfolio Tracker Demo](https://img.youtube.com/vi/SQCW93Hac7o/0.jpg)](https://www.youtube.com/watch?v=SQCW93Hac7o)
+
+▶️ [Watch the demo on YouTube](https://www.youtube.com/watch?v=SQCW93Hac7o)
 
 ---
 
