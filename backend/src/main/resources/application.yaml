@@ -11,7 +11,7 @@ server:
 spring:
   application:
     name: Stock_Portefolio_Tracker
-    flyway:
+  flyway:
       enabled: false
 
   security:
